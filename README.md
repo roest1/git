@@ -2,6 +2,17 @@
 
 ---
 
+### Set Credentials
+
+```sh
+git config --global user.email "12345678+username@users.noreply.github.com"
+git config --global user.name "username"
+```
+
+**Important**:
+
+- Use the email by going to `Settings > Emails` and at the top you'll see your no-reply email.
+
 ### Create/Switch to a new branch
 
 ```bash
