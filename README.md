@@ -115,3 +115,20 @@ Rebase
 ```sh
 git rebase origin/main
 ```
+
+### Export README.md -> README.html with same rendering on GitHub
+
+```sh
+pip install grip
+```
+
+```sh
+grip README.md --export README.html
+```
+
+If you get rate-limited, set a token:
+
+```sh
+export GRIP_GITHUB_TOKEN=ghp_your_token_here
+grip README.md --export README.html
+```
