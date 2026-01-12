@@ -116,63 +116,27 @@ Rebase
 git rebase origin/main
 ```
 
-### Export README.md -> README.html with same rendering on GitHub
+---
+
+update local view of what exists on GitHub:
 
 ```sh
-pip install grip
+git fetch --prune
 ```
+
+or equivalently:
 
 ```sh
-grip README.md --export README.html
+git remote prune origin
 ```
 
-If you get rate-limited, set a token:
+---
+
+simplest way to delete local branches that are deleted on github
 
 ```sh
-export GRIP_GITHUB_TOKEN=ghp_your_token_here
-grip README.md --export README.html
+git fetch -p
+git branch -vv | awk '/: gone]/{print $1}' | xargs -r git branch -d
 ```
 
-Sometimes that's enough, but if you have math equations \$..\$ or \$$..\$$, then use this:
-
-```sh
-# 1) GitHub dark markdown CSS
-curl -L -o github-markdown-dark.min.css \
-  https://cdn.jsdelivr.net/npm/github-markdown-css@5.4.0/github-markdown-dark.min.css
-
-# 2) Head snippet with CSS + KaTeX (saved as math-head.html)
-cat > math-head.html <<'EOF'
-<link rel="stylesheet" href="github-markdown-dark.min.css">
-<style>
-  body { background:#0d1117; color:#c9d1d9; }
-  .markdown-body { box-sizing:border-box; max-width:980px; margin:2rem auto; padding:2rem; }
-  .katex { color: inherit; }
-</style>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
-<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
-<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-  renderMathInElement(document.body, {
-    delimiters: [
-      {left: "$$", right: "$$", display: true},
-      {left: "$",  right: "$",  display: false},
-      {left: "\\[", right: "\\]", display: true},
-      {left: "\\(", right: "\\)", display: false}
-    ]
-  });
-});
-</script>
-EOF
-```
-
-Export with grip and inject snippet:
-
-```sh
-# Export README.md -> temp HTML using grip
-grip README.md --export _grip.html
-
-# Insert math-head.html right before </head>
-awk 'FNR==NR{a=a$0"\n"; next} /<\/head>/{print a} {print}' math-head.html _grip.html > README.html
-rm _grip.html
-```
+---
